@@ -5,6 +5,17 @@ music option cominf soon
 
 Instalation and start:
 
+install libs:
+
+
+sudo python3 -m pip install -U discord.py
+
+sudo python3 -m pip install -U discord.py[voice]
+
+sudo pip3 install chatterbot
+
+
+
 git clone https://github.com/cyber-Ahn/tgn_discord_bot.git
 
 cd tgn_discord_bot
