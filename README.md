@@ -20,7 +20,6 @@ git clone https://github.com/cyber-Ahn/tgn_discord_bot.git
 
 cd tgn_discord_bot
 
-sudo bash setup.sh
 
 
 get a tokken from https://discordapp.com/developers/applications
