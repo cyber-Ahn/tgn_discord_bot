@@ -1,1 +1,1 @@
-TOKEN = "your app tokken from discord"
+TOKEN = "enter your discord app tokken"
