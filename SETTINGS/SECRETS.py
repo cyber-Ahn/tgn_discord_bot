@@ -1,0 +1,1 @@
+TOKEN = "your app tokken from discord"
