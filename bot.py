@@ -1,7 +1,9 @@
+from colorama import Fore, Back, Style
+print (Fore.GREEN + "Load AI")
 import discord
 import asyncio as asyncio
+from commands import perms, cmd_bot, cmd_autorole, cmd_help, cmd_clear, cmd_admin, cmd_cat, debug
 from SETTINGS import SECRETS, STATICS
-from commands import perms, cmd_bot, cmd_autorole, cmd_help, cmd_clear, cmd_admin, cmd_cat
 
 chat_filter =[] 
 client = discord.Client()
@@ -10,7 +12,7 @@ file = open("SETTINGS/chatFilter.txt", "r")
 for line in file:
     chat_filter.append(line.rstrip())
 file.close()
-print("Chat Filter:")
+print(Fore.YELLOW + "Chat Filter:")
 print(chat_filter)
 
 commands ={
@@ -25,10 +27,11 @@ commands ={
 
 @client.event
 async def on_ready():
-    print ("Bot is logged in \n Server(s):")
+    print (Fore.GREEN + "Bot is logged in \n Server(s):")
     for s in client.servers:
-        print(" - %s [%s] " % (s.name, s.id))
+        print(Fore.RED + " - %s [%s] " % (s.name, s.id))
     await client.change_presence(game=discord.Game(name="with Humans"))
+    print (Fore.WHITE + "Ready for use")
 
 @client.event
 async def on_member_join(member):
@@ -49,9 +52,11 @@ async def on_message(message):
         args = message.content.split(" ")[1:]
         if commands.__contains__(invoke):
             cmd = commands[invoke]
+            debug.write("blue", invoke)
             try:
                 if not perms.check(message.author, cmd.perm):
                     await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description="You are not allowed to access this command!"))
+                    debug.write("red", "No access, low level!")
                     return
                 await cmd.ex(args, message, client, invoke)
             except:
@@ -59,5 +64,6 @@ async def on_message(message):
                 pass
         else:
             await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description=("The command %s is not valid!" % invoke)))
+            debug.write("red", "No valid command!")
 
 client.run(SECRETS.TOKEN)
