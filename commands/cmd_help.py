@@ -1,5 +1,6 @@
 import discord
 import asyncio as asyncio
+from commands import debug
 
 text = "- \n prefix autorole rolename - set role for new members (*autorole Member)\n "
 text = text + "prefix autorole clear - delete the role for new members\n"
@@ -16,3 +17,4 @@ text = text + "default prefix is * example *cat"
 
 async def ex(args, message, client, invoke):
     await client.send_message(message.channel, text)
+    debug.write("yellow", text)
