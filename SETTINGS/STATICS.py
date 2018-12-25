@@ -1,2 +1,2 @@
-PREFIX = "*"
+PREFIX = "."
 DEBUG = "1"
