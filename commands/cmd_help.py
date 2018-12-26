@@ -4,6 +4,7 @@ from commands import debug
 
 text = "- \n prefix autorole rolename - set role for new members (.autorole Member)\n "
 text = text + "prefix autorole clear - delete the role for new members\n"
+text = text + "prefix music help - commands for the music bot\n"
 text = text + "prefix clear 5 - delete last 5 messages in channel\n"
 text = text + "prefix admin role role_name name - add role to member\n"
 text = text + "prefix admin removerole role_name name - remove role from member\n"
