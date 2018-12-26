@@ -1,1 +1,1 @@
-TOKEN = "NTIzNjMxNzQ5NDU3MTE3MTg0.DvcafA.OZ8XnYIGIaN8VerFsSWQA3eWvOA"
+TOKEN = "your discord app key"
