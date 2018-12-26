@@ -13,6 +13,10 @@ install libs:
 
 * sudo pip3 install chatterbot
 
+* sudo pip3 install FFmpeg
+
+* sudo python3 -m pip install -U youtube_dl
+
 
 
 - git clone https://github.com/cyber-Ahn/tgn_discord_bot.git
