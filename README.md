@@ -1,5 +1,5 @@
 # tgn_discord_bot
-Bot for Discord with some commands and chat AI
+Bot for Discord with some commands,chat filter and chat AI
 
 music option cominf soon
 
