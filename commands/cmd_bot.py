@@ -1,6 +1,6 @@
 perm = 1
 
-from commands import AI, debug
+from commands import debug, AI
 import aiohttp
 import discord
 import json

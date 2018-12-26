@@ -13,7 +13,7 @@ text = text + "prefix admin unban name - unban a member\n"
 text = text + "prefix admin name nickname - change nickname from member\n"
 text = text + "prefix cat - shows random cat image\n"
 text = text + "prefix bot - texting with the bot (\n bot hello\n bot dice - roll the dice\n bot oracle Question - answer with yes,no or maybe\n bot bitcoin - get the Exchange rate\n *bot write somthing - talk with the bot)\n"
-text = text + "default prefix is . example: .cat"
+text = text + "default prefix is . example .cat"
 
 async def ex(args, message, client, invoke):
     await client.send_message(message.channel, text)
