@@ -1,7 +1,7 @@
 # tgn_discord_bot
 Bot for Discord with some commands,chat filter and chat AI
 
-music option cominf soon
+playlist for each user on server coming soon
 
 Instalation and start:
 
