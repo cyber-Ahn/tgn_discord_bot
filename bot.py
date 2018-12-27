@@ -1,4 +1,6 @@
 from colorama import Fore, Back, Style
+import os
+os.system('clear')
 print (Fore.GREEN + "Load AI")
 import discord
 import asyncio as asyncio
