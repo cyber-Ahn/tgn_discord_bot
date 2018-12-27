@@ -2,6 +2,8 @@ perm = 4
 
 import discord
 from commands import debug
+from subprocess import call
+import time
 
 async def ex(args, message, client, invoke):
     if len(args) > 0:
@@ -48,5 +50,13 @@ async def ex(args, message, client, invoke):
                 await client.remove_roles(memb,role)
                 await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("role %s was removed" % rolename)))
                 debug.write("green", "remove " + role + " to " + memb)
+        elif args[0] == "shutdown":
+            debug.write("red", "Shutdown in 5 sec!")
+            time.sleep(5)
+            call(['shutdown', '-h', 'now'], shell=False)
+        elif args[0] == "reboot":
+            debug.write("red", "Reboot in 5 sec!")
+            time.sleep(5)
+            call(['reboot', '-h', 'now'], shell=False)
     else:
         await client.send_message(message.channel, "What do you want?")        

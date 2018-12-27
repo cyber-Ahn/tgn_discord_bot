@@ -4,9 +4,12 @@ from commands import debug
 from os import path
 import discord
 import os
+import time
 import youtube_dl
 
 players = {}
+queues = {}
+
 
 def saveFile(message, name, url):
     if not path.isdir("playlist/" + message.server.id):
@@ -44,9 +47,11 @@ def removeUrl(message, name, url):
                 file.write(line)
         file.close()
 
-def play_list(server, args):
-    debug.write("green", "start playlist")
-    
+def check_queue(id):
+    if queues[id] != []:
+        player = queues[id].pop(0)
+        players[id] = player 
+        player.start() 
 
 async def ex(args, message, client, invoke):
     if len(args) > 0:
@@ -66,6 +71,7 @@ async def ex(args, message, client, invoke):
         elif args[0] == "play":
             id = message.server.id
             if id in players:
+                queues = {}
                 players[id].stop()
             url = args[1]
             debug.write("green", "load and play: "+ url)
@@ -83,6 +89,7 @@ async def ex(args, message, client, invoke):
         elif args[0] == "stop":
             debug.write("red", "stop")
             id = message.server.id
+            queues = {}
             players[id].stop()
         
         elif args[0] == "resume":
@@ -113,10 +120,40 @@ async def ex(args, message, client, invoke):
             removeFile(message, name)
             debug.write("red", "remove playlist: " + name)
             await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description=("remove playlist: %s" % name)))
+        
+        elif args[0] == "startplaylist":
+            global queues
+            queues = {}
+            name = args[1]
+            debug.write("green", "Load playlist")
+            await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("Loade Playlist: %s please wait!" % name)))
+            server = message.server
+            id = server.id
+            if id in players:
+                players[id].stop()
+            voice_client = client.voice_client_in(server)
+            if path.isfile("playlist/" + message.server.id + "/" + name):
+                file = open("playlist/" + message.server.id + "/" + name,"r")
+                lines = file.readlines()
+                file.close()
+            for line in lines:
+                url = line.rstrip()
+                player = await voice_client.create_ytdl_player(url, after= lambda: check_queue(server.id))
+                if server.id in queues:
+                    queues[server.id].append(player)
+                else:
+                    queues[server.id] = [player]
+                time.sleep(1)
+            await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("Loaded Playlist: %s" % name)))
+            player = queues[id].pop(0)
+            players[server.id] = player
+            player.start()
 
-
-
-
+        elif args[0] == "skip":
+            debug.write("red", "skip")
+            id = message.server.id
+            players[id].stop()
+            await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description="skip song!"))
 
         elif args[0] == "help":
             text = ".music join - join your voice channel\n"
@@ -128,8 +165,9 @@ async def ex(args, message, client, invoke):
             text = text + ".music addplaylist playlistname url - adds a url to playlistname\n"
             text = text + ".music rmplaylist playlistname url - remove a url from playlistname\n"
             text = text + ".music removeplaylsit playlistname - removes the playlist with playlistname\n"
+            text = text + ".music startplaylist playlistname - starts the playlist with the name playlistname\n"
+            text = text + ".music skip - skip to next song in playlist\n"
             await client.send_message(message.channel, text)
-
 
     else:
         await client.send_message(message.channel, "What do you want?")
