@@ -154,6 +154,15 @@ async def ex(args, message, client, invoke):
             id = message.server.id
             players[id].stop()
             await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description="skip song!"))
+        
+        elif args[0] == "getplaylist":
+            debug.write("green", "print all Playlists")
+            file_l = ""
+            for files in os.listdir("playlist/" + message.server.id):
+                file_l = file_l + files + "\n"
+            await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=file_l))
+            debug.write("yellow", file_l)
+
 
         elif args[0] == "help":
             text = ".music join - join your voice channel\n"
@@ -167,6 +176,7 @@ async def ex(args, message, client, invoke):
             text = text + ".music removeplaylsit playlistname - removes the playlist with playlistname\n"
             text = text + ".music startplaylist playlistname - starts the playlist with the name playlistname\n"
             text = text + ".music skip - skip to next song in playlist\n"
+            text = text + ".music getplaylist - shows all playlist for this server\n"
             await client.send_message(message.channel, text)
 
     else:
