@@ -2,6 +2,9 @@ perm = 2
 
 from commands import debug
 from os import path
+from urllib.parse import urlparse
+from urllib import request
+import urllib
 import discord
 import os
 import time
@@ -10,6 +13,44 @@ import youtube_dl
 players = {}
 queues = {}
 
+def youtube_search(keywords):
+    i = 0
+    ser = ""
+    for x in keywords:
+        if i == 1:
+            ser = ser + urllib.parse.quote(x)
+        elif i != 0:
+            ser = ser + "+" + urllib.parse.quote(x)
+        i = i + 1
+    resp = request.urlopen("https://www.youtube.com/results?search_query="+ser)
+    code = resp.code
+    if code == 200:
+        data = resp.read()
+        html = data.decode("UTF-8")[:86500]
+        cach = html.split('</div><div class="yt-lockup-content">')
+        cach = cach[1].split('/watch?v=')
+        cach = cach[1].split('" class="')
+        html = cach[0]
+        url = "https://www.youtube.com/watch?v="+html
+        return url
+    time.sleep(1)
+
+def url_check(url):
+    min_attr = ('scheme' , 'netloc')
+    try:
+        result = urlparse(url)
+        if all([result.scheme, result.netloc]):
+            return True
+        else:
+            return False
+    except:
+        return False
+
+def youtube_check(url):
+    if "www.youtube.com" in url:
+        return True
+    else:
+        return False
 
 def saveFile(message, name, url):
     if not path.isdir("playlist/" + message.server.id):
@@ -74,12 +115,15 @@ async def ex(args, message, client, invoke):
                 queues = {}
                 players[id].stop()
             url = args[1]
-            debug.write("green", "load and play: "+ url)
-            server = message.server
-            voice_client = client.voice_client_in(server)
-            player = await voice_client.create_ytdl_player(url)
-            players[server.id] = player
-            player.start()
+            if url_check(url) and youtube_check(url):
+                debug.write("green", "load and play: "+ url)
+                server = message.server
+                voice_client = client.voice_client_in(server)
+                player = await voice_client.create_ytdl_player(url)
+                players[server.id] = player
+                player.start()
+            else:
+                await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description="Valid url! Use youtube url!"))
         
         elif args[0] == "pause":
             debug.write("green", "pause")
@@ -100,13 +144,16 @@ async def ex(args, message, client, invoke):
         elif args[0] == "addplaylist":
             name = args[1]
             url = args[2]
-            if check_in_list(message, name, url) == "no":
-                saveFile(message, name, url)
-                debug.write("green", "add " + url + " to playlist " + name + " on server " + message.server.id)
-                await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("Song add to playlist %s" % name)))
+            if url_check(url) and youtube_check(url):
+                if check_in_list(message, name, url) == "no":
+                    saveFile(message, name, url)
+                    debug.write("green", "add " + url + " to playlist " + name + " on server " + message.server.id)
+                    await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("Song add to playlist %s" % name)))
+                else:
+                    debug.write("red", "song already exists")
+                    await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description="song already exists"))
             else:
-                debug.write("red", "song already exists")
-                await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description="song already exists"))
+                await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description="Valid url! Use youtube url!"))
         
         elif args[0] == "rmplaylist":
             name = args[1]
@@ -162,12 +209,24 @@ async def ex(args, message, client, invoke):
                 file_l = file_l + files + "\n"
             await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=file_l))
             debug.write("yellow", file_l)
+        
+        elif args[0] == "search":
+            debug.write("green", "search in youtube")
+            url = youtube_search(args)
+            debug.write("green", "url: "+url)
+            await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("Load and Play: %s" % url)))
+            server = message.server
+            voice_client = client.voice_client_in(server)
+            player = await voice_client.create_ytdl_player(url)
+            players[server.id] = player
+            player.start()
 
 
         elif args[0] == "help":
             text = ".music join - join your voice channel\n"
             text = text + ".music disconnect - disconnect voice channel\n"
             text = text + ".music play url - plays the youtube url\n"
+            text = text + ".music search name of song - search a song on youtube and play this song\n"
             text = text + ".music pause - pause the player\n"
             text = text + ".music resume - resume to music\n"
             text = text + ".music stop - stop the player\n"
