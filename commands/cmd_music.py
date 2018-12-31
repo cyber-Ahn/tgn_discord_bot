@@ -109,22 +109,6 @@ async def ex(args, message, client, invoke):
             voice_client = client.voice_client_in(server)
             await voice_client.disconnect()
         
-        elif args[0] == "play":
-            id = message.server.id
-            if id in players:
-                queues = {}
-                players[id].stop()
-            url = args[1]
-            if url_check(url) and youtube_check(url):
-                debug.write("green", "load and play: "+ url)
-                server = message.server
-                voice_client = client.voice_client_in(server)
-                player = await voice_client.create_ytdl_player(url)
-                players[server.id] = player
-                player.start()
-            else:
-                await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description="Valid url! Use youtube url!"))
-        
         elif args[0] == "pause":
             debug.write("green", "pause")
             id = message.server.id
@@ -196,6 +180,31 @@ async def ex(args, message, client, invoke):
             players[server.id] = player
             player.start()
 
+        elif args[0] == "play":
+            debug.write("green", "add song")
+            server = message.server
+            id = server.id
+            url = args[1]
+            voice_client = client.voice_client_in(server)
+            if url_check(url) and youtube_check(url):
+                player = await voice_client.create_ytdl_player(url, after= lambda: check_queue(server.id))
+                if server.id in queues:
+                    queues[server.id].append(player)
+                else:
+                    queues[server.id] = [player]
+            else:
+                url = youtube_search(args)
+                player = await voice_client.create_ytdl_player(url, after= lambda: check_queue(server.id))
+                if server.id in queues:
+                    queues[server.id].append(player)
+                else:
+                    queues[server.id] = [player]
+            if not id in players:
+                player = queues[id].pop(0)
+                players[server.id] = player
+                player.start()
+
+
         elif args[0] == "skip":
             debug.write("red", "skip")
             id = message.server.id
@@ -209,24 +218,11 @@ async def ex(args, message, client, invoke):
                 file_l = file_l + files + "\n"
             await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=file_l))
             debug.write("yellow", file_l)
-        
-        elif args[0] == "search":
-            debug.write("green", "search in youtube")
-            url = youtube_search(args)
-            debug.write("green", "url: "+url)
-            await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("Load and Play: %s" % url)))
-            server = message.server
-            voice_client = client.voice_client_in(server)
-            player = await voice_client.create_ytdl_player(url)
-            players[server.id] = player
-            player.start()
-
 
         elif args[0] == "help":
             text = ".music join - join your voice channel\n"
             text = text + ".music disconnect - disconnect voice channel\n"
-            text = text + ".music play url - plays the youtube url\n"
-            text = text + ".music search name of song - search a song on youtube and play this song\n"
+            text = text + ".music play url/name - plays the youtube url or song from name\n"
             text = text + ".music pause - pause the player\n"
             text = text + ".music resume - resume to music\n"
             text = text + ".music stop - stop the player\n"
