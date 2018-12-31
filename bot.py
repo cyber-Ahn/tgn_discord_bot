@@ -34,7 +34,7 @@ async def on_ready():
     print (Fore.GREEN + "Bot is logged in \n Server(s):")
     for s in client.servers:
         print(Fore.RED + " - %s [%s] " % (s.name, s.id))
-    await client.change_presence(game=discord.Game(name="with Humans"))
+    await client.change_presence(game=discord.Game(name="with humanity"))
     print (Fore.WHITE + "Ready for use")
 
 @client.event
