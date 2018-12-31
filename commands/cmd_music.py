@@ -187,6 +187,7 @@ async def ex(args, message, client, invoke):
             url = args[1]
             voice_client = client.voice_client_in(server)
             if url_check(url) and youtube_check(url):
+                await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("Load and add Song: %s" % url)))
                 player = await voice_client.create_ytdl_player(url, after= lambda: check_queue(server.id))
                 if server.id in queues:
                     queues[server.id].append(player)
@@ -194,6 +195,7 @@ async def ex(args, message, client, invoke):
                     queues[server.id] = [player]
             else:
                 url = youtube_search(args)
+                await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("Load and add Song: %s" % url)))
                 player = await voice_client.create_ytdl_player(url, after= lambda: check_queue(server.id))
                 if server.id in queues:
                     queues[server.id].append(player)
