@@ -99,6 +99,8 @@ Music Commands:
 
 .music stop - stop the player
 
+.music volume 50 - set volume to 50% (steps: 0, 10, 20 ... , 200)
+
 .music addplaylist playlistname url - adds a url to playlistname
 
 .music rmplaylist playlistname url - remove a url from playlistname
