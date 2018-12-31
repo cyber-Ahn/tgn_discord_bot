@@ -113,18 +113,28 @@ async def ex(args, message, client, invoke):
             debug.write("green", "pause")
             id = message.server.id
             players[id].pause()
+            await client.send_message(message.channel, "player paused")
         
         elif args[0] == "stop":
             debug.write("red", "stop")
             id = message.server.id
             queues = {}
             players[id].stop()
+            await client.send_message(message.channel, "player stoped")
         
         elif args[0] == "resume":
             debug.write("green", "resume")
             id = message.server.id
             players[id].resume()
+            await client.send_message(message.channel, "resume player")
 
+        elif args[0] == "volume":
+            vol = int(args[1])
+            id = message.server.id
+            vol = vol / 100
+            debug.write("green","set volume to: "+str(vol))
+            await client.send_message(message.channel, "set volume to: " + str(vol))
+            players[id].volume = vol 
         elif args[0] == "addplaylist":
             name = args[1]
             url = args[2]
@@ -237,6 +247,7 @@ async def ex(args, message, client, invoke):
             text = text + ".music pause - pause the player\n"
             text = text + ".music resume - resume to music\n"
             text = text + ".music stop - stop the player\n"
+            text = text + ".music volume 50 - set volume to 50% (steps: 0, 10, 20 ... , 200)\n"
             text = text + ".music addplaylist playlistname url - adds a url to playlistname\n"
             text = text + ".music rmplaylist playlistname url - remove a url from playlistname\n"
             text = text + ".music removeplaylsit playlistname - removes the playlist with playlistname\n"
