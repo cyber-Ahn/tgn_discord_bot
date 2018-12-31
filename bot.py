@@ -4,7 +4,7 @@ os.system('clear')
 print (Fore.GREEN + "Load AI")
 import discord
 import asyncio as asyncio
-from commands import perms, cmd_bot, cmd_autorole, cmd_help, cmd_clear, cmd_admin, cmd_cat, debug, cmd_music, cmd_info
+from commands import perms, cmd_autorole, cmd_help, cmd_clear, cmd_admin, cmd_cat, debug, cmd_music, cmd_info, cmd_bot
 from SETTINGS import SECRETS, STATICS
 
 chat_filter =[] 
