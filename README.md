@@ -91,9 +91,7 @@ Music Commands:
 
 .music disconnect - disconnect voice channel
 
-.music play url - plays the youtube url
-
-.music search name of song - search a song on youtube and play this song
+.music play url/name - plays the youtube url or song from name
 
 .music pause - pause the player
 
