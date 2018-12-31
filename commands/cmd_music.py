@@ -13,6 +13,9 @@ import youtube_dl
 players = {}
 queues = {}
 
+global queues
+global players
+
 def youtube_search(keywords):
     i = 0
     ser = ""
@@ -92,7 +95,28 @@ def check_queue(id):
     if queues[id] != []:
         player = queues[id].pop(0)
         players[id] = player 
-        player.start() 
+        player.start()
+        rv = read_volume(id)
+        players[id].volume = rv
+
+def save_volume(message, vol):
+    if not path.isdir("SETTINGS/" + message.server.id):
+        os.makedirs("SETTINGS/" + message.server.id)
+    with open("SETTINGS/" + message.server.id + "/volume", "w") as f:
+        f.write(str(vol))
+        f.close()
+
+def read_volume(id):
+    vol = 1.0
+    if path.isfile("SETTINGS/" + id + "/volume"):
+        file = open("SETTINGS/" + id + "/volume","r")
+        lines = file.readlines()
+        file.close()
+        for x in lines:
+            vol = float(x)
+        return vol
+    else:
+         return vol
 
 async def ex(args, message, client, invoke):
     if len(args) > 0:
@@ -101,7 +125,6 @@ async def ex(args, message, client, invoke):
             await client.join_voice_channel(channel)
             debug.write("green", "Join channel!")
             await client.send_message(message.channel, "'.music help' - for command list")
-        
         
         elif args[0] == "disconnect":
             debug.write("red", "disconnect channel")
@@ -117,8 +140,8 @@ async def ex(args, message, client, invoke):
         
         elif args[0] == "stop":
             debug.write("red", "stop")
+            queues.pop(message.server.id)
             id = message.server.id
-            queues = {}
             players[id].stop()
             await client.send_message(message.channel, "player stoped")
         
@@ -134,7 +157,9 @@ async def ex(args, message, client, invoke):
             vol = vol / 100
             debug.write("green","set volume to: "+str(vol))
             await client.send_message(message.channel, "set volume to: " + str(vol))
-            players[id].volume = vol 
+            players[id].volume = vol
+            save_volume(message, vol)
+         
         elif args[0] == "addplaylist":
             name = args[1]
             url = args[2]
@@ -163,8 +188,6 @@ async def ex(args, message, client, invoke):
             await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description=("remove playlist: %s" % name)))
         
         elif args[0] == "startplaylist":
-            global queues
-            queues = {}
             name = args[1]
             debug.write("green", "Load playlist")
             await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("Loade Playlist: %s please wait!" % name)))
@@ -192,11 +215,17 @@ async def ex(args, message, client, invoke):
             player = queues[id].pop(0)
             players[server.id] = player
             player.start()
+            rv = read_volume(id)
+            players[id].volume = rv
 
         elif args[0] == "play":
-            debug.write("green", "add song")
             server = message.server
             id = server.id
+            pla = "no"
+            if not id in queues:
+                pla = "yes"
+            debug.write("green",pla)
+            debug.write("green", "add song")
             url = args[1]
             voice_client = client.voice_client_in(server)
             if url_check(url) and youtube_check(url):
@@ -220,10 +249,12 @@ async def ex(args, message, client, invoke):
                         queues[server.id] = [player]
                 except:
                     await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description="Somthing is wrong!"))
-            if not id in players:
+            if pla == "yes":
                 player = queues[id].pop(0)
                 players[server.id] = player
                 player.start()
+                rv = read_volume(id)
+                players[id].volume = rv
 
 
         elif args[0] == "skip":
