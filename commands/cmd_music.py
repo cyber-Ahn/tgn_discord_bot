@@ -98,6 +98,8 @@ def check_queue(id):
         player.start()
         rv = read_volume(id)
         players[id].volume = rv
+    else:
+        queues.pop(id)
 
 def save_volume(message, vol):
     if not path.isdir("SETTINGS/" + message.server.id):
@@ -219,12 +221,12 @@ async def ex(args, message, client, invoke):
             players[id].volume = rv
 
         elif args[0] == "play":
+            url = args[1]
             server = message.server
             id = server.id
             pla = "no"
             if not id in queues:
                 pla = "yes"
-            debug.write("green",pla)
             debug.write("green", "add song")
             url = args[1]
             voice_client = client.voice_client_in(server)
@@ -255,7 +257,6 @@ async def ex(args, message, client, invoke):
                 player.start()
                 rv = read_volume(id)
                 players[id].volume = rv
-
 
         elif args[0] == "skip":
             debug.write("red", "skip")
