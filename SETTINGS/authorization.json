@@ -3,7 +3,7 @@
    {
        "lvl1": ["Support"],
        "lvl2": ["Bot", "Friends"],
-       "lvl3": ["Admin"],
+       "lvl3": ["Admin", "Administrator","admin"],
        "lvl4": ["Owner"] 
    } 
 }
