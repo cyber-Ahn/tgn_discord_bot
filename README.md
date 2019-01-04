@@ -62,10 +62,6 @@ prefix autorole rolename - set role for new members (.autorole Member)
 
 prefix autorole clear - delete the role for new members
 
-prefix admin removerole role_name name - remove role from member
-
-prefix admin addchatfilter word - add word to chat-filter
-
 prefix music help - commands for the music bot
 
 prefix clear 5 - delete last 5 messages in channel
@@ -73,6 +69,10 @@ prefix clear 5 - delete last 5 messages in channel
 prefix admin role role_name name - add role to member
 
 prefix admin removerole role_name name - remove role from member
+
+prefix admin addchatfilter word - add word to chat-filter
+
+prefix admin rmchatfilter word - remove word from chat-filter
 
 prefix admin kick name - kick a member
 
