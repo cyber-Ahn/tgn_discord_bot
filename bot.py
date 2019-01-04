@@ -4,18 +4,13 @@ os.system('clear')
 print (Fore.GREEN + "Load AI")
 import discord
 import asyncio as asyncio
+import shutil
+from os import path
 from commands import perms, cmd_autorole, cmd_help, cmd_clear, cmd_admin, cmd_cat, debug, cmd_music, cmd_info, cmd_bot
 from SETTINGS import SECRETS, STATICS
 
-chat_filter =[] 
+chat_filter = {}
 client = discord.Client()
-
-file = open("SETTINGS/chatFilter.txt", "r") 
-for line in file:
-    chat_filter.append(line.rstrip())
-file.close()
-print(Fore.YELLOW + "Chat Filter:")
-print(chat_filter)
 
 commands ={
     "bot": cmd_bot,
@@ -29,11 +24,28 @@ commands ={
 
 } 
 
+def chatFread(id):
+    global chat_filter
+    file = open("SETTINGS/" + id +"/chatFilter.txt", "r")
+    for line in file:
+        if id in chat_filter:
+            chat_filter[id].append(line.rstrip())
+        else:
+            chat_filter[id] = [line.rstrip()]
+    file.close()
+
 @client.event
 async def on_ready():
     print (Fore.GREEN + "Bot is logged in \n Server(s):")
     for s in client.servers:
         print(Fore.RED + " - %s [%s] " % (s.name, s.id))
+        if not path.isfile("SETTINGS/" + s.id + "/authorization.json"):
+            os.makedirs("SETTINGS/" + s.id)
+            shutil.copyfile('SETTINGS/authorization.json', 'SETTINGS/' + s.id + '/authorization.json')
+            shutil.copyfile('SETTINGS/chatFilter.txt', 'SETTINGS/' + s.id + '/chatFilter.txt')
+        chatFread(s.id)
+    print(Fore.YELLOW + "Chat Filter:")
+    print(chat_filter)
     await client.change_presence(game=discord.Game(name="with humanity"))
     print (Fore.WHITE + "Ready for use")
 
@@ -48,7 +60,7 @@ async def on_member_join(member):
 async def on_message(message):
     contens = message.content.lower().split(" ")
     for word in contens:
-        if word in chat_filter:
+        if word in chat_filter[message.server.id]:
             await client.delete_message(message)
 
     if message.content.startswith(STATICS.PREFIX):
@@ -58,7 +70,7 @@ async def on_message(message):
             cmd = commands[invoke]
             debug.write("blue", invoke)
             try:
-                if not perms.check(message.author, cmd.perm):
+                if not perms.check(message.author, cmd.perm, message.server.id):
                     await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description="You are not allowed to access this command!"))
                     debug.write("red", "No access, low level!")
                     return
@@ -66,6 +78,12 @@ async def on_message(message):
             except:
                 await cmd.ex(args, message, client, invoke)
                 pass
+            if len(args) > 1:
+                if args[0] == "rmchatfilter" or args[0] == "addchatfilter":
+                    chat_filter[message.server.id] = []
+                    chatFread(message.server.id)
+                    print(Fore.YELLOW + "Chat Filter:")
+                    print(chat_filter)
         else:
             await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description=("The command %s is not valid!" % invoke)))
             debug.write("red", "No valid command!")
