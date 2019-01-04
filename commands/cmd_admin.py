@@ -2,6 +2,7 @@ perm = 4
 
 import discord
 from commands import debug
+from os import path
 from subprocess import call
 import time
 
@@ -49,7 +50,7 @@ async def ex(args, message, client, invoke):
             else:
                 await client.remove_roles(memb,role)
                 await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("role %s was removed" % rolename)))
-                debug.write("green", "remove " + role + " to " + memb)
+                debug.write("green", "remove " + role + " from " + memb)
         elif args[0] == "shutdown":
             debug.write("red", "Shutdown in 5 sec!")
             time.sleep(5)
@@ -58,5 +59,28 @@ async def ex(args, message, client, invoke):
             debug.write("red", "Reboot in 5 sec!")
             time.sleep(5)
             call(['reboot', '-h', 'now'], shell=False)
+        elif args[0] == "addchatfilter":
+            dat = args[1]
+            if path.isfile("SETTINGS/" + message.server.id + "/chatFilter.txt"):
+                debug.write("green", "chat-filter add " + dat)
+                with open("SETTINGS/" + message.server.id + "/chatFilter.txt", "a") as f:
+                    f.write(dat+"\n")
+                    f.close()
+                await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("add %s to chatFilter" % dat)))
+        elif args[0] == "rmchatfilter":
+            dat = args[1]
+            if path.isfile("SETTINGS/" + message.server.id + "/chatFilter.txt"):
+                debug.write("red", "chat-filter remove " + dat)
+                file = open("SETTINGS/" + message.server.id + "/chatFilter.txt","r")
+                lines = file.readlines()
+                file.close()
+                file = open("SETTINGS/" + message.server.id + "/chatFilter.txt","w")
+                for line in lines:
+                    if line != (dat+"\n"):
+                        file.write(line)
+                    else:
+                        await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("remove %s from chatFilter" % dat)))
+                file.close()
+            
     else:
         await client.send_message(message.channel, "What do you want?")        

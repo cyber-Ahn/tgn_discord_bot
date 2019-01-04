@@ -1,15 +1,13 @@
 import json
 
-with open("SETTINGS/authorization.json", "r") as f:
-    cachjson = f.read()
-    settings = json.loads(cachjson)
-
-lvl1 = settings["perms"]["lvl1"]
-lvl2 = settings["perms"]["lvl2"]
-lvl3 = settings["perms"]["lvl3"]
-lvl4 = settings["perms"]["lvl4"]
-
-def get(memb):
+def get(memb, id):
+    with open("SETTINGS/" + id + "/authorization.json", "r") as f:
+        cachjson = f.read()
+        settings = json.loads(cachjson)
+    lvl1 = settings["perms"]["lvl1"]
+    lvl2 = settings["perms"]["lvl2"]
+    lvl3 = settings["perms"]["lvl3"]
+    lvl4 = settings["perms"]["lvl4"]
     lvl = [0]
     for r in memb.roles:
         if r.name in lvl4:
@@ -22,5 +20,5 @@ def get(memb):
             lvl.append(1)
     return max(lvl)
 
-def check(memb, lvl):
-    return get(memb) >= lvl
+def check(memb, lvl, id):
+    return get(memb, id) >= lvl

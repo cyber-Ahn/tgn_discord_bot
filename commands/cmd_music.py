@@ -204,13 +204,13 @@ async def ex(args, message, client, invoke):
                 file.close()
             for line in lines:
                 url = line.rstrip()
+                time.sleep(1)
                 try:
                     player = await voice_client.create_ytdl_player(url, after= lambda: check_queue(server.id))
                     if server.id in queues:
                         queues[server.id].append(player)
                     else:
                         queues[server.id] = [player]
-                    time.sleep(1)
                 except:
                     await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description="Somthing is wrong!"))
             await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("Loaded Playlist: %s" % name)))
