@@ -89,6 +89,16 @@ bot bitcoin - get the Exchange rate / bot write somthing - talk with the bot)
 
 default prefix is . example .cat
 
+Role System:
+
+lvl1 = .bot, .cat, .help .info commands / lvl2 = .music commands / lvl3 = .clear commands / lvl4 = .admin, .autorole commands
+
+.admin getpermsrole level (example: .admin getpermsrole lvl2) - show all roles for level 2
+
+.admin addpermsrole level rolename (example: .admin addpermsrole lvl2 test) - add role 'test' to level 2
+
+.admin rmpermsrole level rolename (example: .admin rmpermsrole lvl2 test) - remove role 'test' from level 2
+
 Music Commands:
 
 .music join - join your voice channel
