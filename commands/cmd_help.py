@@ -17,7 +17,12 @@ text = text + "prefix admin name nickname - change nickname from member\n"
 text = text + "prefix cat - shows random cat image\n"
 text = text + "prefix bot - texting with the bot (\n bot hello\n bot dice - roll the dice\n bot oracle Question - answer with yes,no or maybe\n bot bitcoin - get the Exchange rate\n *bot write somthing - talk with the bot)\n"
 text = text + "default prefix is . example .cat\n"
-text = text + ".info - get bot profil"
+text = text + ".info - get bot profil\n"
+text = text + "Role System:\n"
+text = text + "lvl1 = .bot, .cat, .help .info commands / lvl2 = .music commands / lvl3 = .clear commands / lvl4 = .admin, .autorole commands\n"
+text = text + ".admin getpermsrole level (example: .admin getpermsrole lvl2) - show all roles for level 2\n"
+text = text + ".admin addpermsrole level rolename (example: .admin addpermsrole lvl2 test) - add role 'test' to level 2\n"
+text = text + ".admin rmpermsrole level rolename (example: .admin rmpermsrole lvl2 test) - remove role 'test' from level 2\n"
 
 async def ex(args, message, client, invoke):
     await client.send_message(message.channel, text)
