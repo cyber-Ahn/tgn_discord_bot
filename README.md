@@ -1,6 +1,7 @@
 # tgn_discord_bot
-Bot for Discord with some commands,chat filter, chat AI and music-bot with playlist for each user in the Server 
+Bot for Discord with some commands,chat filter, chat AI and music-bot(youtube/soundcloud) with playlist for each user in the Server 
 
+spotify comning soon!!
 
 Instalation and start:
 
@@ -105,7 +106,7 @@ Music Commands:
 
 .music disconnect - disconnect voice channel
 
-.music play url/name - plays the youtube url or song from name
+.music play url/name - plays the youtube/soundcloud-url or song from name(only youtube)
 
 .music pause - pause the player
 
