@@ -52,6 +52,8 @@ def url_check(url):
 def youtube_check(url):
     if "www.youtube.com" in url:
         return True
+    elif "soundcloud.com" in url:
+        return True
     else:
         return False
 
@@ -204,7 +206,7 @@ async def ex(args, message, client, invoke):
                 file.close()
             for line in lines:
                 url = line.rstrip()
-                time.sleep(1)
+                time.sleep(5)
                 try:
                     player = await voice_client.create_ytdl_player(url, after= lambda: check_queue(server.id))
                     if server.id in queues:
@@ -275,7 +277,7 @@ async def ex(args, message, client, invoke):
         elif args[0] == "help":
             text = ".music join - join your voice channel\n"
             text = text + ".music disconnect - disconnect voice channel\n"
-            text = text + ".music play url/name - plays the youtube url or song from name\n"
+            text = text + ".music play url/name - plays the youtube/soundcloud-url or song from name(only youtube)\n"
             text = text + ".music pause - pause the player\n"
             text = text + ".music resume - resume to music\n"
             text = text + ".music stop - stop the player\n"
