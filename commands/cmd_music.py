@@ -57,20 +57,20 @@ def youtube_check(url):
     else:
         return False
 
-def saveFile(message, name, url):
-    if not path.isdir("playlist/" + message.server.id):
-        os.makedirs("playlist/" + message.server.id)
-    with open("playlist/" + message.server.id + "/" + name, "a") as f:
+def saveFile(message, name, url, home_phat):
+    if not path.isdir(home_phat + "playlist/" + message.server.id):
+        os.makedirs(home_phat + "playlist/" + message.server.id)
+    with open(home_phat + "playlist/" + message.server.id + "/" + name, "a") as f:
         f.write(url+"\n")
         f.close()
 
-def check_in_list(message, name, url):
-    if not path.isdir("playlist/" + message.server.id):
-        return "No"
-    elif not path.isfile("playlist/" + message.server.id + "/" + name):
+def check_in_list(message, name, url, home_phat):
+    if not path.isdir(home_phat + "playlist/" + message.server.id):
+        return "no"
+    elif not path.isfile(home_phat + "playlist/" + message.server.id + "/" + name):
         return "no"
     else:
-        file = open("playlist/" + message.server.id + "/" + name,"r")
+        file = open(home_phat + "playlist/" + message.server.id + "/" + name,"r")
         lines = file.readlines()
         file.close()
         if (url+"\n") in lines:
@@ -78,42 +78,42 @@ def check_in_list(message, name, url):
         else:
             return "no"
 
-def removeFile(message, name):
-    if path.isfile("playlist/" + message.server.id + "/" + name):
-        os.remove("playlist/" + message.server.id + "/" + name)
+def removeFile(message, name, home_phat):
+    if path.isfile(home_phat + "playlist/" + message.server.id + "/" + name):
+        os.remove(home_phat + "playlist/" + message.server.id + "/" + name)
 
-def removeUrl(message, name, url):
-    if path.isfile("playlist/" + message.server.id + "/" + name):
-        file = open("playlist/" + message.server.id + "/" + name,"r")
+def removeUrl(message, name, url, home_phat):
+    if path.isfile(home_phat + "playlist/" + message.server.id + "/" + name):
+        file = open(home_phat + "playlist/" + message.server.id + "/" + name,"r")
         lines = file.readlines()
         file.close()
-        file = open("playlist/" + message.server.id + "/" + name,"w")
+        file = open(home_phat + "playlist/" + message.server.id + "/" + name,"w")
         for line in lines:
             if line != (url+"\n"):
                 file.write(line)
         file.close()
 
-def check_queue(id):
+def check_queue(id, home_phat):
     if queues[id] != []:
         player = queues[id].pop(0)
         players[id] = player 
         player.start()
-        rv = read_volume(id)
+        rv = read_volume(id, home_phat)
         players[id].volume = rv
     else:
         queues.pop(id)
 
-def save_volume(message, vol):
-    if not path.isdir("SETTINGS/" + message.server.id):
-        os.makedirs("SETTINGS/" + message.server.id)
-    with open("SETTINGS/" + message.server.id + "/volume", "w") as f:
+def save_volume(message, vol, home_phat):
+    if not path.isdir(home_phat + "SETTINGS/" + message.server.id):
+        os.makedirs(home_phat + "SETTINGS/" + message.server.id)
+    with open(home_phat + "SETTINGS/" + message.server.id + "/volume", "w") as f:
         f.write(str(vol))
         f.close()
 
-def read_volume(id):
+def read_volume(id, home_phat):
     vol = 1.0
-    if path.isfile("SETTINGS/" + id + "/volume"):
-        file = open("SETTINGS/" + id + "/volume","r")
+    if path.isfile(home_phat + "SETTINGS/" + id + "/volume"):
+        file = open(home_phat + "SETTINGS/" + id + "/volume","r")
         lines = file.readlines()
         file.close()
         for x in lines:
@@ -122,7 +122,7 @@ def read_volume(id):
     else:
          return vol
 
-async def ex(args, message, client, invoke):
+async def ex(args, message, client, invoke, home_phat):
     if len(args) > 0:
         if args[0] == "join":
             channel = message.author.voice.voice_channel
@@ -162,14 +162,14 @@ async def ex(args, message, client, invoke):
             debug.write("green","set volume to: "+str(vol))
             await client.send_message(message.channel, "set volume to: " + str(vol))
             players[id].volume = vol
-            save_volume(message, vol)
+            save_volume(message, vol, home_phat)
          
         elif args[0] == "addplaylist":
             name = args[1]
             url = args[2]
             if url_check(url) and youtube_check(url):
-                if check_in_list(message, name, url) == "no":
-                    saveFile(message, name, url)
+                if check_in_list(message, name, url, home_phat) == "no":
+                    saveFile(message, name, url, home_phat)
                     debug.write("green", "add " + url + " to playlist " + name + " on server " + message.server.id)
                     await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("Song add to playlist %s" % name)))
                 else:
@@ -181,13 +181,13 @@ async def ex(args, message, client, invoke):
         elif args[0] == "rmplaylist":
             name = args[1]
             url = args[2]
-            removeUrl(message, name, url)
+            removeUrl(message, name, url, home_phat)
             debug.write("red", "remove " + url + " from playlist: " + name)
             await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description=("remove %s from playlist: %s" % (url, name))))
         
         elif args[0] == "removeplaylist":
             name = args[1]
-            removeFile(message, name)
+            removeFile(message, name, home_phat)
             debug.write("red", "remove playlist: " + name)
             await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description=("remove playlist: %s" % name)))
         
@@ -200,15 +200,15 @@ async def ex(args, message, client, invoke):
             if id in players:
                 players[id].stop()
             voice_client = client.voice_client_in(server)
-            if path.isfile("playlist/" + message.server.id + "/" + name):
-                file = open("playlist/" + message.server.id + "/" + name,"r")
+            if path.isfile(home_phat + "playlist/" + message.server.id + "/" + name):
+                file = open(home_phat + "playlist/" + message.server.id + "/" + name,"r")
                 lines = file.readlines()
                 file.close()
             for line in lines:
                 url = line.rstrip()
                 time.sleep(5)
                 try:
-                    player = await voice_client.create_ytdl_player(url, after= lambda: check_queue(server.id))
+                    player = await voice_client.create_ytdl_player(url, after= lambda: check_queue(server.id, home_phat))
                     if server.id in queues:
                         queues[server.id].append(player)
                     else:
@@ -219,7 +219,7 @@ async def ex(args, message, client, invoke):
             player = queues[id].pop(0)
             players[server.id] = player
             player.start()
-            rv = read_volume(id)
+            rv = read_volume(id, home_phat)
             players[id].volume = rv
 
         elif args[0] == "play":
@@ -235,7 +235,7 @@ async def ex(args, message, client, invoke):
             if url_check(url) and youtube_check(url):
                 try:
                     await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("Load and add Song: %s" % url)))
-                    player = await voice_client.create_ytdl_player(url, after= lambda: check_queue(server.id))
+                    player = await voice_client.create_ytdl_player(url, after= lambda: check_queue(server.id, home_phat))
                     if server.id in queues:
                         queues[server.id].append(player)
                     else:
@@ -246,7 +246,7 @@ async def ex(args, message, client, invoke):
                 url = youtube_search(args)
                 try:
                     await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("Load and add Song: %s" % url)))
-                    player = await voice_client.create_ytdl_player(url, after= lambda: check_queue(server.id))
+                    player = await voice_client.create_ytdl_player(url, after= lambda: check_queue(server.id, home_phat))
                     if server.id in queues:
                         queues[server.id].append(player)
                     else:
@@ -257,7 +257,7 @@ async def ex(args, message, client, invoke):
                 player = queues[id].pop(0)
                 players[server.id] = player
                 player.start()
-                rv = read_volume(id)
+                rv = read_volume(id, home_phat)
                 players[id].volume = rv
 
         elif args[0] == "skip":
@@ -269,7 +269,7 @@ async def ex(args, message, client, invoke):
         elif args[0] == "getplaylist":
             debug.write("green", "print all Playlists")
             file_l = ""
-            for files in os.listdir("playlist/" + message.server.id):
+            for files in os.listdir(home_phat + "playlist/" + message.server.id):
                 file_l = file_l + files + "\n"
             await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=file_l))
             debug.write("yellow", file_l)

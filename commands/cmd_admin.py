@@ -3,43 +3,12 @@ perm = 4
 import discord
 from commands import debug
 from os import path
+import shlex
 from subprocess import call
+from subprocess import run
 import time
-import json
 
-def read_json(id, table, lvl):
-    if path.isfile("SETTINGS/" + id + "/authorization.json"):
-        with open("SETTINGS/" + id + "/authorization.json", "r") as read_file:
-            data = json.load(read_file)
-            roles = data[table][lvl]
-        read_file.close()
-        return roles
-
-def add_json(id, table, lvl, val):
-    if path.isfile("SETTINGS/" + id + "/authorization.json"):
-        with open("SETTINGS/" + id + "/authorization.json", "r") as read_file:
-            data = json.load(read_file)
-            data[table][lvl].append(val)
-        read_file.close()
-        with open("SETTINGS/" + id + "/authorization.json", "w") as write_file:
-            json.dump(data, write_file)
-        write_file.close()
-
-def del_json(id, table, lvl, val):
-    if path.isfile("SETTINGS/" + id + "/authorization.json"):
-        with open("SETTINGS/" + id + "/authorization.json", "r") as read_file:
-            data = json.load(read_file)
-            cach = []
-            for i in data[table][lvl]:
-                if not i == val:
-                    cach.append(i)
-        read_file.close()
-        data[table][lvl] = cach
-        with open("SETTINGS/" + id + "/authorization.json", "w") as write_file:
-            json.dump(data, write_file)
-        write_file.close()
-
-async def ex(args, message, client, invoke):
+async def ex(args, message, client, invoke, home_phat):
     if len(args) > 0:
         debug.write("green", args[0])
         if args[0] == "ban":
@@ -92,45 +61,33 @@ async def ex(args, message, client, invoke):
             debug.write("red", "Reboot in 5 sec!")
             time.sleep(5)
             call(['reboot', '-h', 'now'], shell=False)
+        elif args[0] == "exit":
+            debug.write("red", "Close bot!")
+            await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description=("close bot!")))
+            cmd = shlex.split("pkill -f bot.py")
+            run(cmd)
         elif args[0] == "addchatfilter":
             dat = args[1]
-            if path.isfile("SETTINGS/" + message.server.id + "/chatFilter.txt"):
+            if path.isfile(home_phat + "SETTINGS/" + message.server.id + "/chatFilter.txt"):
                 debug.write("green", "chat-filter add " + dat)
-                with open("SETTINGS/" + message.server.id + "/chatFilter.txt", "a") as f:
+                with open(home_phat + "SETTINGS/" + message.server.id + "/chatFilter.txt", "a") as f:
                     f.write(dat+"\n")
                     f.close()
                 await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("add %s to chatFilter" % dat)))
         elif args[0] == "rmchatfilter":
             dat = args[1]
-            if path.isfile("SETTINGS/" + message.server.id + "/chatFilter.txt"):
+            if path.isfile(home_phat + "SETTINGS/" + message.server.id + "/chatFilter.txt"):
                 debug.write("red", "chat-filter remove " + dat)
-                file = open("SETTINGS/" + message.server.id + "/chatFilter.txt","r")
+                file = open(home_phat + "SETTINGS/" + message.server.id + "/chatFilter.txt","r")
                 lines = file.readlines()
                 file.close()
-                file = open("SETTINGS/" + message.server.id + "/chatFilter.txt","w")
+                file = open(home_phat + "SETTINGS/" + message.server.id + "/chatFilter.txt","w")
                 for line in lines:
                     if line != (dat+"\n"):
                         file.write(line)
                     else:
                         await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("remove %s from chatFilter" % dat)))
                 file.close()
-        elif args[0] == "getpermsrole":
-            lvl = args[1]
-            debug.write("green", "get role for lvl: " + lvl)
-            rt_d = read_json(message.server.id, "perms", lvl)
-            await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("roles: %s" % rt_d)))
-        elif args[0] == "addpermsrole":
-            lvl = args[1]
-            role_n = args[2]
-            debug.write("green", "add role " + role_n +" to lvl: " + lvl)
-            add_json(message.server.id, "perms", lvl, role_n)
-            await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("add %s" % role_n)))
-        elif args[0] == "rmpermsrole":
-            lvl = args[1]
-            role_n = args[2]            
-            debug.write("green", "remove role " + role_n +" to lvl: " + lvl)
-            del_json(message.server.id, "perms", lvl, role_n)
-            await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("remove %s" % role_n)))
             
     else:
         await client.send_message(message.channel, "What do you want?")        

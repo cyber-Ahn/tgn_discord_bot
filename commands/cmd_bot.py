@@ -7,7 +7,7 @@ import json
 import random
 import time
 
-async def ex(args, message, client, invoke):
+async def ex(args, message, client, invoke, home_phat):
     if len(args) > 0:
         if "hello" in args:
             debug.write("blue", args[0])

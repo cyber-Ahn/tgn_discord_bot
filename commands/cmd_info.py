@@ -15,8 +15,7 @@ text = text + "default prefix is . example .cat"
 
 text2 = ".music join - join your voice channel\n\n"
 text2 = text2 + ".music disconnect - disconnect voice channel\n\n"
-text2 = text2 + ".music play url - plays the youtube url\n\n"
-text2 = text2 + ".music search name of song - search a song on youtube and play this song\n\n"
+text2 = text2 + ".music play url/name - plays the youtube/soundcloud-url or song from name(only youtube)\n\n"
 text2 = text2 + ".music pause - pause the player\n\n"
 text2 = text2 + ".music resume - resume to music\n\n"
 text2 = text2 + ".music stop - stop the player\n\n"
@@ -27,9 +26,9 @@ text2 = text2 + ".music startplaylist playlistname - starts the playlist with th
 text2 = text2 + ".music skip - skip to next song in playlist\n\n"
 text2 = text2 + ".music getplaylist - shows all playlist for this server"
 
-async def ex(args, message, client, invoke):
+async def ex(args, message, client, invoke, home_phat):
     embed = discord.Embed(
-        title = "RGN Discord Bot Info",
+        title = "TGN Discord Bot Info",
         description = "This is a bot with chat filter, chat AI and music-bot with playlist for each user in the Server",
         colour = discord.Colour.blue()
     )

@@ -3,7 +3,7 @@ import requests
 import json
 from commands import debug
 
-async def ex(args, message, client, invoke):
+async def ex(args, message, client, invoke, home_phat):
     r = requests.get("https://random.cat")
     r = str(r.content)
     r = r.replace("b'","")

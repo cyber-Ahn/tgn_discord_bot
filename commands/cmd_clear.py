@@ -3,7 +3,7 @@ perm = 2
 import discord
 from commands import debug
 
-async def ex(args, message, client, invoke):
+async def ex(args, message, client, invoke, home_phat):
     try:
         amount = int(args[0]) + 1 if len(args) > 0 else 2
     except:

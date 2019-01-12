@@ -1,7 +1,7 @@
 import json
 
-def get(memb, id):
-    with open("SETTINGS/" + id + "/authorization.json", "r") as f:
+def get(memb, id, home_phat):
+    with open(home_phat + "SETTINGS/" + id + "/authorization.json", "r") as f:
         cachjson = f.read()
         settings = json.loads(cachjson)
     lvl1 = settings["perms"]["lvl1"]
@@ -20,5 +20,5 @@ def get(memb, id):
             lvl.append(1)
     return max(lvl)
 
-def check(memb, lvl, id):
-    return get(memb, id) >= lvl
+def check(memb, lvl, id, home_phat):
+    return get(memb, id, home_phat) >= lvl
