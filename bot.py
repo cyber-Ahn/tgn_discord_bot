@@ -1,3 +1,5 @@
+home_phat = "/home/pi/tgn_discord_bot/"
+
 from colorama import Fore, Back, Style
 import os
 os.system('clear')
@@ -24,9 +26,9 @@ commands ={
 
 } 
 
-def chatFread(id):
+def chatFread(id, home_phat):
     global chat_filter
-    file = open("SETTINGS/" + id +"/chatFilter.txt", "r")
+    file = open(home_phat + "SETTINGS/" + id +"/chatFilter.txt", "r")
     for line in file:
         if id in chat_filter:
             chat_filter[id].append(line.rstrip())
@@ -39,11 +41,11 @@ async def on_ready():
     print (Fore.GREEN + "Bot is logged in \n Server(s):")
     for s in client.servers:
         print(Fore.RED + " - %s [%s] " % (s.name, s.id))
-        if not path.isfile("SETTINGS/" + s.id + "/authorization.json"):
-            os.makedirs("SETTINGS/" + s.id)
-            shutil.copyfile('SETTINGS/authorization.json', 'SETTINGS/' + s.id + '/authorization.json')
-            shutil.copyfile('SETTINGS/chatFilter.txt', 'SETTINGS/' + s.id + '/chatFilter.txt')
-        chatFread(s.id)
+        if not path.isfile(home_phat + "SETTINGS/" + s.id + "/authorization.json"):
+            os.makedirs(home_phat + "SETTINGS/" + s.id)
+            shutil.copyfile(home_phat + 'SETTINGS/authorization.json', home_phat + 'SETTINGS/' + s.id + '/authorization.json')
+            shutil.copyfile(home_phat + 'SETTINGS/chatFilter.txt', home_phat + 'SETTINGS/' + s.id + '/chatFilter.txt')
+        chatFread(s.id, home_phat)
     print(Fore.YELLOW + "Chat Filter:")
     print(chat_filter)
     await client.change_presence(game=discord.Game(name="with humanity"))
@@ -52,7 +54,7 @@ async def on_ready():
 @client.event
 async def on_member_join(member):
     await client.send_message(member,"Hey %s!!\n\nWelcome on the %s\n\nNow have a nice day!" % (member.name, member.server.name))
-    role = cmd_autorole.get(member.server)
+    role = cmd_autorole.get(member.server, home_phat)
     if not role == None:
         await client.add_roles(member, role)
 
@@ -70,18 +72,18 @@ async def on_message(message):
             cmd = commands[invoke]
             debug.write("blue", invoke)
             try:
-                if not perms.check(message.author, cmd.perm, message.server.id):
+                if not perms.check(message.author, cmd.perm, message.server.id, home_phat):
                     await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description="You are not allowed to access this command!"))
                     debug.write("red", "No access, low level!")
                     return
-                await cmd.ex(args, message, client, invoke)
+                await cmd.ex(args, message, client, invoke, home_phat)
             except:
-                await cmd.ex(args, message, client, invoke)
+                await cmd.ex(args, message, client, invoke, home_phat)
                 pass
             if len(args) > 1:
                 if args[0] == "rmchatfilter" or args[0] == "addchatfilter":
                     chat_filter[message.server.id] = []
-                    chatFread(message.server.id)
+                    chatFread(message.server.id, home_phat)
                     print(Fore.YELLOW + "Chat Filter:")
                     print(chat_filter)
         else:
