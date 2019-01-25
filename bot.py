@@ -10,9 +10,12 @@ import shutil
 from os import path
 from commands import perms, cmd_autorole, cmd_help, cmd_clear, cmd_admin, cmd_cat, debug, cmd_music, cmd_info, cmd_bot
 from SETTINGS import SECRETS, STATICS
+from time import localtime, strftime
 
 chat_filter = {}
 client = discord.Client()
+
+debug.write("blue","Discord Token:" + SECRETS.TOKEN)
 
 commands ={
     "bot": cmd_bot,
@@ -35,6 +38,20 @@ def chatFread(id, home_phat):
         else:
             chat_filter[id] = [line.rstrip()]
     file.close()
+
+async def reconnect():
+    await client.wait_until_ready()
+    a = True
+    while a:
+        if client.is_closed:
+            time_out = strftime("%Y-%m-%d %H:%M:%S", localtime())
+            debug.log(time_out + " - Websocket Offline - Reboot Script in 10 sec.", home_phat)
+            await asyncio.sleep(10)
+            os.execv(sys.executable, ['python3'] + sys.argv)
+        else:
+            time_out = strftime("%Y-%m-%d %H:%M:%S", localtime())
+            debug.log(time_out + " - Websocket Online", home_phat)
+        await asyncio.sleep(300)
 
 @client.event
 async def on_ready():
@@ -90,4 +107,5 @@ async def on_message(message):
             await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description=("The command %s is not valid!" % invoke)))
             debug.write("red", "No valid command!")
 
+client.loop.create_task(reconnect())
 client.run(SECRETS.TOKEN)
