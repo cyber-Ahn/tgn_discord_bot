@@ -1,20 +1,49 @@
 perm = 2
 
 from commands import debug
+from SETTINGS import SECRETS
 from os import path
 from urllib.parse import urlparse
 from urllib import request
 import urllib
 import discord
 import os
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
 import time
 import youtube_dl
 
 players = {}
 queues = {}
 
+sp_id = SECRETS.spotify_id
+sp_secret = SECRETS.spotify_secret
+debug.write("blue", "Spotify ID:" + sp_id + "\nSpotify Secret:" + sp_secret)
+
 global queues
 global players
+
+def get_sp_top_tracks(name, max):
+    re_out = {}
+    num = 1
+    client_credentials_manager = SpotifyClientCredentials(sp_id, sp_secret)
+    spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+    results = spotify.search(q='artist:' + name, type='artist')
+    uri = results['artists']['items'][0]['uri']
+    debug.write("green", uri)
+    results = spotify.artist_top_tracks(uri)
+    for track in results['tracks'][:max]:
+        name_s = 'name;'+track['name']
+        debug.write("green", track['name'])
+        prev = 'preview;'+track['preview_url']
+        uri = 'uri;'+track['uri']
+        url = 'url;https://open.spotify.com/track/{}'.format(track['uri'].split(":")[2])
+        re_out[num]=[name_s]
+        re_out[num].append(prev)
+        re_out[num].append(uri)
+        re_out[num].append(url)
+        num = num + 1
+    return re_out
 
 def youtube_search(keywords):
     i = 0
@@ -273,6 +302,16 @@ async def ex(args, message, client, invoke, home_phat):
                 file_l = file_l + files + "\n"
             await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=file_l))
             debug.write("yellow", file_l)
+        
+        elif args[0] == "splay":
+            #.music splay 2 Led Zeppelin
+            name = args.__str__()[15:-1].replace(",", "").replace("'", "")
+            num_song = int(args[1])
+            debug.write("green", name)
+            debug.write("green", str(num_song))
+            sp_data = get_sp_top_tracks(name,10)[num_song]
+            print(sp_data) 
+
 
         elif args[0] == "help":
             text = ".music join - join your voice channel\n"

@@ -12,3 +12,9 @@ def write(color, msg):
         elif color == "yellow":
             print(Fore.YELLOW + msg)
         print(Style.RESET_ALL)
+
+def log(msg, home_phat):
+    if STATICS.LOG == "1":
+        with open(home_phat + "SETTINGS/log.txt", "a") as f:
+            f.write(msg+"\n")
+            f.close()
