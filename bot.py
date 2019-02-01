@@ -47,7 +47,7 @@ async def reconnect():
             time_out = strftime("%Y-%m-%d %H:%M:%S", localtime())
             debug.log(time_out + " - Websocket Offline - Reboot Script in 10 sec.", home_phat)
             await asyncio.sleep(10)
-            os.execv(sys.executable, ['python3'] + sys.argv)
+            #os.execv(sys.executable, ['python3'] + sys.argv)
         else:
             time_out = strftime("%Y-%m-%d %H:%M:%S", localtime())
             debug.log(time_out + " - Websocket Online", home_phat)
