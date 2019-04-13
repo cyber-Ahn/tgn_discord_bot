@@ -11,7 +11,7 @@ install libs:
 
 * sudo python3 -m pip install -U discord.py[voice]
 
-* sudo pip3 install chatterbot
+* sudo pip3 install git+git://github.com/gunthercox/ChatterBot.git@master
 
 * sudo pip3 install FFmpeg
 
