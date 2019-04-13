@@ -13,6 +13,8 @@ install libs:
 
 * sudo pip3 install git+git://github.com/gunthercox/ChatterBot.git@master
 
+* sudo pip3 install ./ChatterBot
+
 * sudo pip3 install FFmpeg
 
 * sudo python3 -m pip install -U youtube_dl
