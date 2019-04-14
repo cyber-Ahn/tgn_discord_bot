@@ -19,6 +19,8 @@ install libs:
 
 * sudo python3 -m pip install -U youtube_dl
 
+* sudo pip3 install spotipy
+
 
 
 - git clone https://github.com/cyber-Ahn/tgn_discord_bot.git
