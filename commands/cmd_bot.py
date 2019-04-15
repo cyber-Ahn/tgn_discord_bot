@@ -1,6 +1,6 @@
 perm = 1
 
-from commands import debug, AI
+from commands import debug, pi, AI
 import aiohttp
 import discord
 import json
@@ -37,6 +37,11 @@ async def ex(args, message, client, invoke, home_phat):
             answers = ["yes", "no", "maybe"]
             await client.send_message(message.channel, ":cookie:")
             debug.write("yellow", ":cookie:")
+        elif "get-pi" in args:
+            debug.write("blue", args[0] + "|" + args[1])
+            dat = pi.get_pi(True,int(args[1]))
+            await client.send_message(message.channel, dat)
+            debug.write("yellow", dat)
         elif "bitcoin" in args:
             debug.write("blue", args[0])
             url = 'https://api.coindesk.com/v1/bpi/currentprice/BTC.json'
