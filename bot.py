@@ -80,8 +80,20 @@ async def on_message(message):
     contens = message.content.lower().split(" ")
     for word in contens:
         if word in chat_filter[message.server.id]:
-            await client.delete_message(message)
-            debug.write("red", "delete: " + word)
+            channel_d = str(message.channel)
+            bad_word = word
+            new_msg = str(message.author) + ": "
+            if channel_d != "msg":
+                await client.delete_message(message)
+                for x_a in contens:
+                    if x_a == bad_word:
+                        new_msg = new_msg + "--- "
+                    else:
+                        new_msg = new_msg + x_a + " "
+                debug.write("red", "delete word: " + word)
+                debug.write("red", "channel:" + channel_d)
+                debug.write("red",new_msg)
+                await client.send_message(message.channel, new_msg)
 
     if message.content.startswith(STATICS.PREFIX):
         invoke = message.content[len(STATICS.PREFIX):].split(" ")[0]
