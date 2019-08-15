@@ -7,19 +7,19 @@ Instalation and start:
 
 install libs:
 
-* sudo python3 -m pip install -U discord.py
+* pip3 install discord.py==0.16.12
 
-* sudo python3 -m pip install -U discord.py[voice]
+* pip3 install discord.py==0.16.12[voice]
 
-* sudo pip3 install git+git://github.com/gunthercox/ChatterBot.git@master
+* pip3 install ChatterBot==0.8.7
 
-* sudo pip3 install ./ChatterBot
+* pip3 install chatterbot-corpus==1.1.4
 
-* sudo pip3 install FFmpeg
+* sudo pip3 install FFmpeg==1.4
 
-* sudo python3 -m pip install -U youtube_dl
+* sudo pip3 install youtube_dl==2019.7.16
 
-* sudo pip3 install spotipy
+* sudo pip3 install spotipy==2.4.4
 
 
 
