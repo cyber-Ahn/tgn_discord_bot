@@ -11,3 +11,6 @@ def ask_ai(msg):
         return replay
     except:
         return "Somthing is wrong! Try again."
+
+if __name__ == "__main__":
+    print("This is a library, it can not be started directly.")

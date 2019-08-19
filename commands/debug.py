@@ -18,3 +18,6 @@ def log(msg, home_phat):
         with open(home_phat + "SETTINGS/log.txt", "a") as f:
             f.write(msg+"\n")
             f.close()
+
+if __name__ == "__main__":
+    print("This is a library, it can not be started directly.")

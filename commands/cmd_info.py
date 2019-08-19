@@ -44,3 +44,6 @@ async def ex(args, message, client, invoke, home_phat):
     embed.add_field(name='Commands:', value=text, inline=False)
     embed.add_field(name='Music Commands:', value=text2, inline=False)
     await client.send_message(message.channel, embed=embed)
+
+if __name__ == "__main__":
+    print("This is a command script, it can not be started directly.")

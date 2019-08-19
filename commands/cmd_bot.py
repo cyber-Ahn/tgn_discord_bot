@@ -57,3 +57,6 @@ async def ex(args, message, client, invoke, home_phat):
             await client.send_message(message.channel, answ)
     else:
         await client.send_message(message.channel, "What do you want?")
+
+if __name__ == "__main__":
+    print("This is a command script, it can not be started directly.")

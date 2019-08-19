@@ -140,4 +140,7 @@ async def ex(args, message, client, invoke, home_phat):
             await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.green(), description=("remove %s" % role_n)))
             
     else:
-        await client.send_message(message.channel, "What do you want?")        
+        await client.send_message(message.channel, "What do you want?")
+
+if __name__ == "__main__":
+    print("This is a command script, it can not be started directly.")

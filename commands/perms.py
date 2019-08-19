@@ -22,3 +22,6 @@ def get(memb, id, home_phat):
 
 def check(memb, lvl, id, home_phat):
     return get(memb, id, home_phat) >= lvl
+
+if __name__ == "__main__":
+    print("This is a library, it can not be started directly.")

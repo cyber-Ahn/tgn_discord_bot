@@ -27,3 +27,6 @@ text = text + ".info - get bot profil"
 async def ex(args, message, client, invoke, home_phat):
     await client.send_message(message.channel, text)
     debug.write("yellow", text)
+
+if __name__ == "__main__":
+    print("This is a command script, it can not be started directly.")

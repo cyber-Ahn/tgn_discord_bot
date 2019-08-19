@@ -23,4 +23,5 @@ def get_pi(debuging,decimal_points):
     t1 = time.time()
     return str(out)+"\ntime:"+str(t1 - t0)
 
-#print(get_pi(False,300))
+if __name__ == "__main__":
+    print("This is a library, it can not be started directly.")

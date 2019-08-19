@@ -13,4 +13,7 @@ async def ex(args, message, client, invoke, home_phat):
     cach = cach[1].split('"><img src')
     url = cach[0]
     debug.write("yellow", url)
-    await client.send_message(message.channel, url)
+    await client.send_message(message.channel, url)#
+
+if __name__ == "__main__":
+    print("This is a command script, it can not be started directly.")

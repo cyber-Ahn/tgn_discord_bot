@@ -16,3 +16,6 @@ async def ex(args, message, client, invoke, home_phat):
         messages.append(m)
     
     await client.delete_messages(messages)
+
+if __name__ == "__main__":
+    print("This is a command script, it can not be started directly.")

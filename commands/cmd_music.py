@@ -332,3 +332,6 @@ async def ex(args, message, client, invoke, home_phat):
     else:
         await client.send_message(message.channel, "What do you want?")
         debug.write("red", "What do you want?")
+
+if __name__ == "__main__":
+    print("This is a command script, it can not be started directly.")
