@@ -50,6 +50,9 @@ async def ex(args, message, client, invoke, home_phat):
             client.ban(memb, days)
             await client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description=("%s was baned" % memb)))
             debug.write("green", memb)
+        elif args[0] == "leave":
+            await client.leave_server(message.server)
+            debug.write("green", "Leave Server")
         elif args[0] == "kick":
             memb = message.server.get_member_named(args[1])
             client.kick(memb)
