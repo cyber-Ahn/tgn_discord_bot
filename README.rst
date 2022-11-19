@@ -1,4 +1,8 @@
-# tgn_discord_bot
+tgn_discord_bot
+---------------------------
+
+|Build Status|  |Python versions|
+
 Bot for Discord with some commands,chat filter, chat AI and music-bot(youtube/soundcloud) with playlist for each user in the Server 
 
 spotify comning soon!!
@@ -131,3 +135,11 @@ Music Commands:
 .music skip - skip to next song in playlist
 
 .music getplaylist - shows all playlist for this server
+
+
+.. ..
+
+.. |Build Status| image:: https://caworks-sl.de/images/build.png
+   :target: https://caworks-sl.de
+.. |Python versions| image:: https://caworks-sl.de/images/python.png
+   :target: https://caworks-sl.de
